@@ -34,7 +34,7 @@ jobs:
 
 
   # Job 2: Test the model
-  test_model:
+  test_build:
     runs-on: ubuntu-latest
     needs: train_model
     steps:
@@ -61,3 +61,54 @@ jobs:
         run: |
           # Assuming you have test files in the 'tests' directory
           pytest bikeshare_project/
+
+      - name: Install and Build python package
+        run: |
+          pip install build
+          python -m build bikeshare_project/
+
+      - name: Upload built package
+        uses: actions/upload-artifact@v4
+        with:
+          name: bikeshare_artifact
+          path: bikeshare_project/dist/bikeshare_model-0.0.1-py3-none-any.whl
+
+  test_dockerize:
+    runs-on: ubuntu-latest
+    needs: test_build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12.1'
+      
+      - name: Test built package
+        uses: actions/checkout@v2
+
+      - name: Download trained model artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: bikeshare_artifact
+          path: bikeshare_project/bike_sharing_api/
+
+      - name: Install and test package
+        run: |
+          pip install bikeshare_project/bike_sharing_api/*.whl
+          pytest bikeshare_project/ 
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+
+      - name: Build docker image
+        run: |
+          cd bikeshare_project/bike_sharing_api/
+          docker build -t chandra1697/bikeshare_api:v0.0.2 .
+
+      - name: Push docker image
+        run: docker push chandra1697/bikeshare_api:v0.0.2
