@@ -24,4 +24,4 @@ jobs:
           pip install -r bikeshare_project/requirements/requirements.txt
 
       - name: Train the model
-        run: python bikeshare_project/bikeshare_model/train_model.py
+        run: python bikeshare_project/bikeshare_model/train_pipeline.py
