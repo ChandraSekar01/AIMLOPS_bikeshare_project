@@ -96,6 +96,7 @@ jobs:
 
       - name: Install and test package
         run: |
+          pip install -r bikeshare_project/requirements/test_requirements.txt
           pip install bikeshare_project/bike_sharing_api/*.whl
           pytest bikeshare_project/ 
 
