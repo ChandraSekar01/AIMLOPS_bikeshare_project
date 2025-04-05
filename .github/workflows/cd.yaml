@@ -22,4 +22,4 @@ jobs:
       - name: Run docker container
         env: 
           DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
-        run: sudo docker run -it -d -p 8002:8002 --name bikeshare_api-container $DOCKER_USER/bikeshare_api:v0.0.2.2
+        run: sudo docker run -it -d -p 8002:8002 --name bikeshare_api-container $DOCKER_USER/bikeshare_api:v0.0.2
