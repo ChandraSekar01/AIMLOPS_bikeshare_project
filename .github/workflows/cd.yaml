@@ -16,8 +16,8 @@ jobs:
           DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
         run: sudo docker pull $DOCKER_USER/bikeshare_api:v0.0.2
 
-      - name: Delete older containers if available
-        run: sudo docker rm -f bikeshare_api-container || true
+      # - name: Delete older containers if available
+      #   run: sudo docker rm -f bikeshare_api-container || true
 
       - name: Run docker container
         env: 
