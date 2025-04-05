@@ -1,3 +1,3 @@
 # AIMLOPS_bikeshare_project
 
-trigger CICD-v1
+trigger CICD-v2
