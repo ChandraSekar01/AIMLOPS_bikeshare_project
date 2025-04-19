@@ -1,0 +1,25 @@
+name: CD PIpeline
+
+on: 
+  workflow_run:
+    workflows: ["CI/CD Pipeline for Bikeshare Model API"]
+    types:
+    - completed
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull Docker Image
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
+        run: sudo docker pull $DOCKER_USER/bikeshare_api:v0.0.2
+
+      - name: Delete older containers if available
+        run: sudo docker rm -f bikeshare_api-container || true
+
+      - name: Run docker container
+        env: 
+          DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
+        run: sudo docker run -it -d -p 8001:8001 --name bikeshare_api-container $DOCKER_USER/bikeshare_api:v0.0.2
